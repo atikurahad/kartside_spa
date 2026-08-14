@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", "Times New Roman", ui-serif, Georgia, serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --color-void: #0a0a0a;
+  --color-void-deep: #000000;
+  --color-ivory: #f5f5f0;
+  --color-ivory-soft: #e8e6df;
+  --color-taupe: #a39e93;
+  --color-stone: #6f6a61;
+  --color-line: rgb(245 245 240 / 0.14);
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background: var(--color-void);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: var(--color-taupe);
+    color: var(--color-void-deep);
+  }
+
+  input,
+  textarea,
+  button {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-ivory);
+    caret-color: var(--color-ivory);
+    box-shadow: 0 0 0 1000px var(--color-void) inset;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  :focus-visible {
+    outline: 1px solid rgb(245 245 240 / 0.35);
+    outline-offset: 4px;
+  }
+}
+
+@layer components {
+  .grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hairline {
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background: rgb(245 245 240 / 0.28);
+  }
+
+  .link-line {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.35em;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-luxe);
+  }
+
+  .link-line:hover::after,
+  .link-line:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgb(245 245 240 / 0.18);
+    border-radius: 0;
+    color: var(--color-ivory);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    padding: 0.85rem 0 0.75rem;
+    outline: none;
+    transition: border-color 0.5s var(--ease-luxe);
+  }
+
+  .field:focus {
+    border-bottom-color: rgb(245 245 240 / 0.72);
+  }
+
+  .field::placeholder {
+    color: rgb(245 245 240 / 0.22);
+  }
+
+  .field-label {
+    display: block;
+    color: var(--color-taupe);
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+}
+
+/* Hide default cursor on desktop when custom cursor is active */
+@media (hover: hover) and (pointer: fine) {
+  body, a, button, input, textarea, [role="button"], .link-line, .field {
+    cursor: none !important;
+  }
+}
+
+/* Smooth text reveal helper classes */
+.reveal-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.reveal-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
