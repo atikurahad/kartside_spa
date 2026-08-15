@@ -30,12 +30,50 @@ export function CustomCursor() {
     const yToFollower = gsap.quickTo(follower, "y", { duration: 0.35, ease: "power2.out" });
 
     let hasMoved = false;
+    let isHovering = false;
+    let lastX = 0;
+    let lastY = 0;
 
     const onMouseMove = (e: MouseEvent) => {
       xToCursor(e.clientX);
       yToCursor(e.clientY);
       xToFollower(e.clientX);
       yToFollower(e.clientY);
+
+      // Velocity-based squash and stretch (only if not hovering over links)
+      if (!isHovering) {
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        const speed = Math.min(Math.hypot(dx, dy), 100);
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+        // Calculate stretch factor
+        const stretch = 1 + speed * 0.0035;
+        const squash = 1 - speed * 0.0035;
+
+        gsap.to(follower, {
+          scaleX: stretch,
+          scaleY: squash,
+          rotation: angle,
+          duration: 0.15,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+
+        // Easingly reset scale/rotation when mouse stops
+        gsap.to(follower, {
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
+          delay: 0.05,
+          duration: 0.35,
+          ease: "power3.out",
+          overwrite: "auto",
+        });
+      }
+
+      lastX = e.clientX;
+      lastY = e.clientY;
 
       if (!hasMoved) {
         hasMoved = true;
@@ -51,9 +89,21 @@ export function CustomCursor() {
       gsap.to([cursor, follower], { opacity: 0, duration: 0.3 });
     };
 
+    const onMouseDown = () => {
+      gsap.to(cursor, { scale: 0.5, duration: 0.15, ease: "power2.out" });
+      gsap.to(follower, { scale: 1.8, duration: 0.15, ease: "power2.out" });
+    };
+
+    const onMouseUp = () => {
+      gsap.to(cursor, { scale: 1, duration: 0.2, ease: "power2.out" });
+      gsap.to(follower, { scale: 1, duration: 0.25, ease: "power2.out" });
+    };
+
     window.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseenter", onMouseEnterWindow);
     document.addEventListener("mouseleave", onMouseLeaveWindow);
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
 
     // Bind event listeners for interactive hover effects
     let registeredElements: { element: Element; enter: () => void; leave: () => void }[] = [];
@@ -65,11 +115,14 @@ export function CustomCursor() {
       );
 
       const onMouseEnter = () => {
+        isHovering = true;
         // Dot gets smaller and shifts color slightly
         gsap.to(cursor, { scale: 0.6, backgroundColor: "var(--color-taupe)", duration: 0.25 });
         // Follower expands and shifts blending mode to create luxury invert effect
         gsap.to(follower, {
-          scale: 1.6,
+          scaleX: 1.6,
+          scaleY: 1.6,
+          rotation: 0,
           borderColor: "var(--color-ivory)",
           borderWidth: "1.5px",
           backgroundColor: "rgba(245, 245, 240, 0.06)",
@@ -79,9 +132,12 @@ export function CustomCursor() {
       };
 
       const onMouseLeave = () => {
+        isHovering = false;
         gsap.to(cursor, { scale: 1, backgroundColor: "var(--color-ivory)", duration: 0.25 });
         gsap.to(follower, {
-          scale: 1,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
           borderColor: "rgba(245, 245, 240, 0.25)",
           borderWidth: "1px",
           backgroundColor: "transparent",
@@ -120,6 +176,8 @@ export function CustomCursor() {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseenter", onMouseEnterWindow);
       document.removeEventListener("mouseleave", onMouseLeaveWindow);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
       unbindHoverEffects();
       observer.disconnect();
     };

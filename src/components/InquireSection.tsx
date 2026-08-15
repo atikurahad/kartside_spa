@@ -3,16 +3,13 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { InquiryForm } from "./InquiryForm";
-import { type SectionContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface InquireSectionProps {
-  data: SectionContent;
-}
-
-export function InquireSection({ data }: InquireSectionProps) {
+export function InquireSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const title = "WELCOME.";
+  const description = "KORTSIDE accepts new relationships through referral.";
 
   useGSAP(
     () => {
@@ -77,7 +74,7 @@ export function InquireSection({ data }: InquireSectionProps) {
         <span className="inquire-hairline hairline mb-14 origin-center" />
         <h2 className="font-serif text-[clamp(1.6rem,6vw,3.75rem)] font-normal tracking-[0.22em] text-ivory select-none">
           <span className="reveal-wrapper pb-[0.1em]">
-            {data.title.split("").map((char, index) => (
+            {title.split("").map((char, index) => (
               <span
                 key={index}
                 className="inquire-char reveal-inner inline-block"
@@ -89,7 +86,7 @@ export function InquireSection({ data }: InquireSectionProps) {
           </span>
         </h2>
         <p className="inquire-desc mt-10 max-w-md font-sans text-xs font-light leading-8 tracking-[0.06em] text-ivory/60 sm:text-sm">
-          {data.description}
+          {description}
         </p>
       </div>
 

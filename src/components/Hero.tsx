@@ -1,14 +1,15 @@
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { type SectionContent } from "../hooks/useContent";
+import { useMagnetic } from "../hooks/useMagnetic";
 
-interface HeroProps {
-  data: SectionContent;
-}
-
-export function Hero({ data }: HeroProps) {
+export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const magneticRef = useMagnetic<HTMLButtonElement>({ strength: 0.38, threshold: 90 });
+  const title = "KORTSIDE";
+  const subtitle = "Discreet executive support";
+  const tagline = "By referral only";
+
 
   useGSAP(
     () => {
@@ -62,7 +63,7 @@ export function Hero({ data }: HeroProps) {
       <div className="flex flex-col items-center text-center">
         <h1 className="max-w-full font-serif text-[clamp(2.2rem,11vw,7.2rem)] font-normal leading-none tracking-[0.16em] text-ivory select-none">
           <span className="reveal-wrapper pb-[0.08em]">
-            {data.title.split("").map((char, index) => (
+            {title.split("").map((char, index) => (
               <span
                 key={index}
                 className="hero-char reveal-inner inline-block"
@@ -79,15 +80,16 @@ export function Hero({ data }: HeroProps) {
 
         <div className="flex flex-col items-center gap-4">
           <p className="hero-fade-up font-sans text-[10px] font-light uppercase tracking-[0.38em] text-ivory/70 sm:text-xs">
-            {data.subtitle}
+            {subtitle}
           </p>
           <p className="hero-fade-up font-sans text-[10px] font-light uppercase tracking-[0.38em] text-taupe sm:text-xs">
-            {data.tagline}
+            {tagline}
           </p>
         </div>
 
         <div className="hero-button mt-20 sm:mt-24">
           <button
+            ref={magneticRef}
             onClick={() => {
               document
                 .getElementById("inquire")

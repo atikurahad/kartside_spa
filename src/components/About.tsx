@@ -2,16 +2,16 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { type SectionContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface AboutProps {
-  data: SectionContent;
-}
-
-export function About({ data }: AboutProps) {
+export function About() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const title = "SELECTIVE\n DESIGN";
+  const description =
+    "KORTSIDE operates by referral and maintains a deliberately limited client roster, allowing for a highly personalized and discreet level of support";
+
+  const titleLines = title.split("\n");
 
   useGSAP(
     () => {
@@ -24,17 +24,25 @@ export function About({ data }: AboutProps) {
         defaults: { ease: "power3.out" },
       });
 
-      // Scroll trigger letters slide up for each title line
+      // Animate separator line
       tl.fromTo(
-        ".about-char",
+        ".about-separator",
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.4, ease: "power3.inOut" }
+      );
+
+      // Scroll trigger lines reveal
+      tl.fromTo(
+        ".about-title-line",
         { y: "115%", opacity: 0 },
-        { y: "0%", opacity: 1, duration: 1.4, stagger: 0.04, ease: "power4.out" }
+        { y: "0%", opacity: 1, duration: 1.4, stagger: 0.18, ease: "power4.out" },
+        "-=1.0"
       );
 
       // Paragraph text fade and rise
       tl.fromTo(
         ".about-text",
-        { y: 25, opacity: 0 },
+        { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" },
         "-=0.9"
       );
@@ -42,39 +50,35 @@ export function About({ data }: AboutProps) {
     { scope: containerRef }
   );
 
-  // Split the title on newline so each line renders separately
-  const titleLines = data.title.split("\n");
-
   return (
     <section
       id="about"
       ref={containerRef}
-      className="relative flex min-h-[70vh] flex-col items-center justify-center px-8 py-28 sm:py-36 overflow-hidden"
+      className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-32 sm:py-40 md:py-48 overflow-hidden"
     >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-16 sm:grid-cols-2 sm:gap-24 uppercase">
-        {/* Left: Large italic serif title */}
-        <div className="flex flex-col">
-          <h2 className="font-serif italic text-[clamp(2.6rem,6.5vw,5.2rem)] font-normal leading-[1.12] tracking-[-0.01em] text-ivory select-none">
-            {titleLines.map((line, lineIdx) => (
-              <span key={lineIdx} className="reveal-wrapper block pb-[0.06em]">
-                {line.split("").map((char, charIdx) => (
-                  <span
-                    key={charIdx}
-                    className="about-char reveal-inner inline-block"
-                    style={{ whiteSpace: char === " " ? "pre" : "normal" }}
-                  >
-                    {char}
-                  </span>
-                ))}
+      <div className="mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 lg:gap-16 items-center max-w-5xl w-full">
+        {/* Left Column: Heading */}
+        <div className="md:col-span-5 text-left flex flex-col justify-center">
+          <h2 className="font-serif text-[clamp(2.5rem,5.5vw,4.5rem)] font-normal leading-[1.08] tracking-[0.06em] text-ivory select-none">
+            {titleLines.map((line, index) => (
+              <span key={index} className="reveal-wrapper block pb-[0.08em]">
+                <span className="about-title-line reveal-inner inline-block">
+                  {line}
+                </span>
               </span>
             ))}
           </h2>
         </div>
 
-        {/* Right: Description paragraph */}
-        <div className="flex flex-col justify-center">
-          <p className="about-text font-sans text-[0.85rem] sm:text-[0.9rem] font-light leading-[2.0] tracking-[0.03em] text-ivory/55">
-            {data.description}
+        {/* Separator */}
+        <div className="flex md:col-span-2 justify-center items-center py-4 md:py-0">
+          <div className="about-separator w-12 h-px md:w-px md:h-28 bg-ivory/15 origin-left md:origin-top" />
+        </div>
+
+        {/* Right Column: Description */}
+        <div className="md:col-span-5 text-left flex items-center">
+          <p className="about-text font-sans text-[0.88rem] md:text-[0.92rem] font-light leading-[1.9] tracking-[0.05em] text-ivory/60">
+            {description}
           </p>
         </div>
       </div>

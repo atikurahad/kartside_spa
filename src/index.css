@@ -127,7 +127,7 @@
   }
 
   .field:focus {
-    border-bottom-color: rgb(245 245 240 / 0.72);
+    border-bottom-color: rgb(245 245 240 / 0.28);
   }
 
   .field::placeholder {

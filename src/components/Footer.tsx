@@ -7,9 +7,6 @@ export function Footer() {
           <span className="font-sans text-xs font-semibold uppercase tracking-[0.24em] text-ivory">
             KORTSIDE
           </span>
-          <span className="mt-1 font-sans text-[9px] font-light uppercase tracking-[0.22em] text-ivory/35">
-            By referral.
-          </span>
         </div>
 
         {/* Center Links */}

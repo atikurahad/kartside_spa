@@ -2,6 +2,7 @@ import { FormEvent, useState, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useMagnetic } from "../hooks/useMagnetic";
 import defaultInquiries from "../data/inquiries.json";
 import {
   emptyInquiryForm,
@@ -40,6 +41,7 @@ export function InquiryForm() {
   const [errors, setErrors] = useState<InquiryFormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const submitBtnRef = useMagnetic<HTMLButtonElement>({ strength: 0.32, threshold: 80 });
 
   const updateField = (field: keyof InquiryFormData, value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
@@ -59,34 +61,11 @@ export function InquiryForm() {
     }
 
     setSubmitting(true);
-    // Simulate connection delay for premium feel
-    setTimeout(() => {
-      try {
-        const stored = localStorage.getItem("kortside_inquiries");
-        let list = [];
-        if (stored) {
-          list = JSON.parse(stored);
-        } else {
-          list = defaultInquiries;
-        }
-
-        const newInquiry = {
-          id: String(Date.now()),
-          ...values,
-          createdAt: new Date().toISOString(),
-        };
-
-        list.push(newInquiry);
-        localStorage.setItem("kortside_inquiries", JSON.stringify(list));
-
-        setSubmitting(false);
-        setSubmitted(true);
-        toast.success("INQUIRY RECEIVED.");
-      } catch (err) {
-        setSubmitting(false);
-        toast.error("SUBMISSION FAILED. PLEASE TRY AGAIN.");
-      }
-    }, 600);
+    window.setTimeout(() => {
+      setSubmitting(false);
+      setSubmitted(true);
+      toast.success("INQUIRY RECEIVED.");
+    }, 900);
   };
 
   if (submitted) {
@@ -135,9 +114,10 @@ export function InquiryForm() {
 
       <div className="form-button-container pt-6 text-center">
         <button
+          ref={submitBtnRef}
           type="submit"
           disabled={submitting}
-          className="min-w-[14rem] border border-ivory/30 px-10 py-4 font-sans text-[10px] font-light uppercase tracking-[0.36em] text-ivory transition-all duration-500 hover:border-ivory hover:bg-ivory hover:text-void disabled:cursor-wait disabled:opacity-50"
+          className="min-w-[14rem] border border-ivory/60 px-10 py-4 font-sans text-[10px] font-light uppercase tracking-[0.36em] text-ivory transition-all duration-500 hover:border-ivory hover:bg-ivory hover:text-void disabled:cursor-wait disabled:opacity-50"
         >
           {submitting ? "SENDING" : "SUBMIT INQUIRY"}
         </button>
@@ -213,23 +193,36 @@ function Field({
   as = "input",
   onChange,
 }: FieldProps) {
+  const [focused, setFocused] = useState(false);
   const describedBy = error ? `${id}-error` : undefined;
+  const isFilled = value.length > 0;
 
   return (
-    <div className="form-field">
-      <label htmlFor={id} className="field-label">
+    <div className="form-field relative pt-6">
+      {/* Premium Floating Label */}
+      <label
+        htmlFor={id}
+        className={`absolute left-0 top-7 select-none font-sans text-[10px] uppercase tracking-[0.32em] transition-all duration-500 ease-luxe origin-left pointer-events-none ${
+          focused || isFilled
+            ? "translate-y-[-26px] scale-[0.85] text-taupe"
+            : "text-ivory/60"
+        }`}
+      >
         {label}
       </label>
+
       {as === "textarea" ? (
         <textarea
           id={id}
           name={id}
-          rows={4}
+          rows={3}
           value={value}
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onChange={(event) => onChange(event.target.value)}
-          className="field mt-2 resize-none"
+          className="field mt-2 resize-none border-b border-ivory/10 outline-none"
         />
       ) : (
         <input
@@ -240,10 +233,20 @@ function Field({
           autoComplete={autoComplete}
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onChange={(event) => onChange(event.target.value)}
-          className="field mt-2"
+          className="field mt-2 border-b border-ivory/10 outline-none"
         />
       )}
+
+      {/* Center-Expanding Underline */}
+      <span
+        className={`absolute bottom-0 left-0 h-px w-full bg-ivory origin-center scale-x-0 transition-transform duration-700 ease-luxe ${
+          focused ? "scale-x-100" : ""
+        }`}
+      />
+
       {error ? (
         <p
           id={`${id}-error`}
