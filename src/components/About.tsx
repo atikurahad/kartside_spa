@@ -9,7 +9,7 @@ export function About() {
   const containerRef = useRef<HTMLDivElement>(null);
   const title = "SELECTIVE BY DESIGN";
   const description =
-    "KORTSIDE operates by referral and maintains a deliberately limited client roster, allowing for a highly personalized and discreet level of support .";
+    "KORTSIDE operates by referral and maintains a deliberately limited client roster, allowing for a highly personalized and discreet level of support.";
 
   const titleLines = title.split("\n");
 
