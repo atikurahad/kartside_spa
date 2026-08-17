@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function InquireSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const title = "WELCOME.";
+  const title = "WELCOME";
   const description = "KORTSIDE accepts new relationships through referral.";
 
   useGSAP(

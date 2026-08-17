@@ -10,7 +10,7 @@ export function Footer() {
         </div>
 
         {/* Center Links */}
-        <nav className="flex items-center gap-6 sm:gap-8">
+        {/* <nav className="flex items-center gap-6 sm:gap-8">
           <a
             href="#"
             className="font-sans text-[9px] font-medium uppercase tracking-[0.22em] text-ivory/60 transition-colors duration-500 hover:text-ivory sm:text-[10px]"
@@ -31,7 +31,7 @@ export function Footer() {
           >
             INQUIRY
           </button>
-        </nav>
+        </nav> */}
 
         {/* Right Section */}
         <div className="text-center sm:text-right">

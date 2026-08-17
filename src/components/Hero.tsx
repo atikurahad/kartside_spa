@@ -7,7 +7,7 @@ export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const magneticRef = useMagnetic<HTMLButtonElement>({ strength: 0.38, threshold: 90 });
   const title = "KORTSIDE";
-  const subtitle = "Discreet executive support";
+  const subtitle = "PRIVATE EXECUTIVE SUPPORT";
   const tagline = "By referral only";
 
 

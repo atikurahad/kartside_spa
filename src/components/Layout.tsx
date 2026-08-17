@@ -7,18 +7,14 @@ import { ScrollToTop } from "./ScrollToTop";
 import { SmoothScroll } from "./SmoothScroll";
 import { CustomCursor } from "./CustomCursor";
 import { Preloader } from "./Preloader";
-import { BackgroundGrid } from "./BackgroundGrid";
 
 export function Layout() {
   const location = useLocation();
   const [isIntroComplete, setIsIntroComplete] = useState(false);
 
   return (
-    <div className="relative flex min-h-dvh flex-col bg-void text-ivory">
+    <div className="relative flex min-h-dvh flex-col bg-black text-ivory">
       <ScrollToTop />
-      
-      {/* Base Grid Layer */}
-      <BackgroundGrid />
 
       {/* Elegant Intro Loading Screen */}
       <AnimatePresence>
@@ -29,10 +25,8 @@ export function Layout() {
 
       {/* Custom Cursor appears once load completes */}
       {isIntroComplete && <CustomCursor />}
-      
-      <div className="grain" aria-hidden="true" />
-      
-      <main className="relative z-10 flex flex-1 flex-col">
+
+      <main className="relative z-10 flex flex-1 flex-col bg-black">
         <AnimatePresence mode="wait">
           {isIntroComplete ? (
             <motion.div
